@@ -105,12 +105,6 @@ class course():
             for i in key:
                 cf.write(i+'\n')
 
-
-        #>>> os.stat('c:/pagefile.sys').st_size==0
-    
-    def file_is_empty(path):
-        return os.stat(path).st_size==0
-
     def getpage(self):
         """
         Access the website
@@ -122,7 +116,6 @@ class course():
         except:
             print("[!] General Error, no internet connection?")
             sys.exit()
-
 
     def parse(self, data, key):
         """
