@@ -47,15 +47,21 @@ class course():
             # Options, banner1 or banner2, whichever banner you like
 
         ckey = self.getcoursekey()
+        # getcoursekey returns list, and save it as ckey
         self.page = self.getpage()
+        # Get the webpage
         self.parse(self.page,ckey)
+        # Parse and display the data scrapped. 
 
 
     def getcoursekey(self):
-        """ Read the course.txt and see if it is empty
+        """ 
+        Read the course.txt and see if it is empty
         And prompt to enter course code if empty
+        Returns coursekeys in list format
         """
         self.checkfile()
+        # Check if the file exists first.
         try:
             if os.stat(str("%s/course.txt" % os.path.abspath('.'))).st_size <= 1:
             # Checking if the filesize is 0 byte
@@ -83,16 +89,27 @@ class course():
                 return self.readcoursekey()
 
     def checkfile(self):
+        """
+        Check if the course.txt file exists
+        And create the file if necessary
+        """
         try:
             f = open('course.txt').read()
         except IOError:
             os.system('echo > course.txt')
 
     def readcoursekey(self):
-        
+        """
+        Read the course key from course.txt
+        And return it as a list
+        """
         return [i for i in open('course.txt').read().split('\n') if i != '']
 
     def writecourse(self):
+        """
+        Get the coursekey input from user
+        And write it inside course.txt
+        """
         key = []
 
         while True:
