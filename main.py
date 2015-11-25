@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import re
 import urllib
 import sys
@@ -14,7 +16,8 @@ banner1 = """
 $$\   $$ |$$ |      $$ |  $$ |
 $$ |  $$ |$$ |  $$\ $$ |  $$ |
 \$$$$$$  |\$$$$$$  |\$$$$$$  |
- \______/  \______/  \______/ """
+ \______/  \______/  \______/ 
+ """
 
 banner2 = """
     .S    sSSs   .S       S.   
@@ -40,19 +43,52 @@ display_banner = True
 
 class course():
 
-    def __init__(self):
-        
+    def __init__(self, room=None):
         if display_banner:
             print banner2
             # Options, banner1 or banner2, whichever banner you like
+        if room:
+            self.checkroom(room)
+        else:
+            if os.exists("timetable.html"):
+                todaydate = datetime.datetime.now().date()
+            ckey = self.getcoursekey()
+            # getcoursekey returns list, and save it as ckey
+            print("[~] Getting webpage")
+            self.page = self.getpage()
+            # Get the webpage
+            self.parse(self.page,ckey)
+            # Parse and display the data scrapped. 
 
-        ckey = self.getcoursekey()
-        # getcoursekey returns list, and save it as ckey
-        self.page = self.getpage()
-        # Get the webpage
-        self.parse(self.page,ckey)
-        # Parse and display the data scrapped. 
+    def checkroom(self,room):
+        print("[~] Getting webpage")
+        
+        page = self.getpage()
+        #print page
+        date = self.getdate(page)
+        print("[+] Date : %s" % date)
+        data = []
+        classes = []
+        print("[+] Getting information for room : %s" % room)
+        pat = re.compile(r'.+<td class="BTsubj">(.+)</td><td class="BTclass">(.+)</td><td class="BTtime">(.+)</td><td class="BTroom">(.+)</td></tr>.+')
+        for i in page:
+            if len(pat.findall(i)) != 0:
+                data.append(pat.findall(i))
+            else: pass
 
+        for i in data:
+            if i[0][3] == room:
+                i = i[0]
+                duration = self.convert_time(i[2][0:4])+" ~ "+self.convert_time(i[2][8:])
+                #class_data = i[0]+"\t"+i[1]+"\t"+duration+"\t"+i[3]
+                class_data = "[{}] [{}] [{}] {}".format(i[3],duration,i[1],i[0])
+                print class_data
+                classes.append(class_data)
+
+        #print classes
+#             0                  1           2           3
+#[('CP1404 - Programming I', 'LA', '09:00 - 11:50', 'C2-04')]
+        
 
     def getcoursekey(self):
         """ 
@@ -127,12 +163,18 @@ class course():
         Access the website
         returns the source code of the iFrame inside the webpage
         """
-        print("[~] Getting webpage")
         try:
             return urllib.urlopen("http://afm.jcu.edu.sg/JCU/InfoDisplay/DailyCourseInformation.aspx").readlines()
         except:
             print("[!] General Error, no internet connection?")
             sys.exit()
+
+    def getdate(self,data):
+        date_pattern = re.compile(r'<br>Date&nbsp;:&nbsp;<span id="lblDate">(.+)</span>')
+        for i in data:
+            if len(date_pattern.findall(i)) != 0:
+                date = date_pattern.findall(i)
+        return date[0]
 
     def parse(self, data, key):
         """
@@ -190,4 +232,8 @@ class course():
         return str(hour)+':'+str(minutes)
 
 if __name__ == '__main__':
-    app = course()
+    import sys
+    if len(sys.argv) == 1:
+        app = course()
+    elif len(sys.argv) == 2:
+        app = course(str(sys.argv[1]).upper())
