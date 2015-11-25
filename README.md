@@ -22,8 +22,8 @@ Run the program
 python main.py
 ```
 
-New feature, check the lectures of the room
-```
+Check the schedule of the room
+```sh
 python main.py c2-04
 ```
 It will show all the classes that commence in the room "c2-04"
