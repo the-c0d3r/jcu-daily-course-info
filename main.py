@@ -50,8 +50,6 @@ class course():
         if room:
             self.checkroom(room)
         else:
-            if os.exists("timetable.html"):
-                todaydate = datetime.datetime.now().date()
             ckey = self.getcoursekey()
             # getcoursekey returns list, and save it as ckey
             print("[~] Getting webpage")
