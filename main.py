@@ -5,7 +5,6 @@ import urllib
 import sys
 import datetime
 import os
-import ast
 
 
 banner1 = """
@@ -67,7 +66,7 @@ class course():
         print("[+] Date : %s" % date)
         data = []
         classes = []
-        print("[+] Getting information for room : %s" % room)
+        print("[+] Getting information for room : %s\n" % room)
         pat = re.compile(r'.+<td class="BTsubj">(.+)</td><td class="BTclass">(.+)</td><td class="BTtime">(.+)</td><td class="BTroom">(.+)</td></tr>.+')
         for i in page:
             if len(pat.findall(i)) != 0:
@@ -80,8 +79,13 @@ class course():
                 duration = self.convert_time(i[2][0:4])+" ~ "+self.convert_time(i[2][8:])
                 #class_data = i[0]+"\t"+i[1]+"\t"+duration+"\t"+i[3]
                 class_data = "[{}] [{}] [{}] {}".format(i[3],duration,i[1],i[0])
-                print class_data
+                #print class_data
                 classes.append(class_data)
+
+        if not classes:
+            print "[!] No info available right now. \n[!] Check back later"
+        else:
+            for i in classes: print i
 
         #print classes
 #             0                  1           2           3
@@ -149,13 +153,13 @@ class course():
         while True:
             code = raw_input("Enter course code : ")
             if code:
-                key.append(code)
+                key.append(code.upper())
             else:
                 break
         with open('course.txt','w') as cf:
             for i in key:
                 cf.write(i+'\n')
-
+    
     def getpage(self):
         """
         Access the website
@@ -179,11 +183,10 @@ class course():
         Gets the input as list
         Returns the course info
         """
-        course_info = {} # to keep the course data inside as dictionary which is stated by coursekey
+        course_info = [] # to keep the course data inside as dictionary which is stated by coursekey
 
         filtered = [] # to keep all the subject list
         classes = 0 # Count of number of class today
-
 
         pat = re.compile(r'<td class="BTsubj">(.+)</td><td class="BTclass">(.+)</td><td class="BTtime">(.+)</td><td class="BTroom">(.+)</td></tr>')
 
@@ -194,22 +197,28 @@ class course():
                 filtered.append(pat.findall(i))
                 # The variable "i" is added to filtered list
             else: pass
-
+        
         for i in filtered:
             for a in key:
                 if a in i[0][0]:
                     duration = self.convert_time(i[0][2][:5])+" ~ "+self.convert_time(i[0][2][8:])
                     # i[0][2][:5] is the start time and i[0][2][8:] is end time
                     # get those time strings and call convert_time to convert them into 12 hour format.
-                    print("\nCourse : {}\nType : {}\nTime : {}\nRoom : {}\n".format(i[0][0],i[0][1],duration,i[0][3]))
+                    #course_data = "\nCourse : {}\nType : {}\nTime : {}\nRoom : {}\n".format(i[0][0],i[0][1],duration,i[0][3])
+                    course_data = {"Course":i[0][0],"Type":i[0][1],"Time":duration,"Room":i[0][3]}
+                    #print(course_data)
+                    course_info.append(course_data)
                     classes += 1
-                    #x = ast.literal_eval(str("{'Course':'%s','Type':'%s','Time':'%s','Room':'%s'}"%(i[0][0],i[0][1],duration,i[0][3])))
-                    # Printing the course information.
+                    
+        for data in course_info:
+            print ''
+            for classdata in data.keys():
+                print("{} : {}".format(classdata,data[classdata]))
 
-        if not classes:
-            print("[*] No More Class for today")
-        elif classes:
-            print ("[*] There are %d class(es) today" % classes)
+        if not course_info:
+            print("\n[*] No More Class for today")
+        elif course_info:
+            print ("\n[*] There are %s class(es) today" % len(course_info))
 
         # Example response from Regular Expression, just for debugging purpose
         #[('BU1805 - Contemporary Business Communications', 'LA,B,C,D,E,F', '16:00 - 17:50', 'C4-14')]
@@ -230,8 +239,11 @@ class course():
         return str(hour)+':'+str(minutes)
 
 if __name__ == '__main__':
-    import sys
-    if len(sys.argv) == 1:
-        app = course()
-    elif len(sys.argv) == 2:
-        app = course(str(sys.argv[1]).upper())
+    try:
+        import sys
+        if len(sys.argv) == 1:
+            app = course()
+        elif len(sys.argv) == 2:
+            app = course(str(sys.argv[1]).upper())
+    except KeyboardInterrupt:
+        print("\n[+] Ctrl + C detected!")
