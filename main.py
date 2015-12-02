@@ -129,7 +129,10 @@ class course():
         try:
             f = open('course.txt').read()
         except IOError:
-            os.system('echo > course.txt')
+            if osname == 'windows':
+                os.system('copy NUL course.txt')
+            elif osname == 'linux':
+                os.system('touch course.txt')
 
     def readcoursekey(self):
         """
@@ -235,6 +238,10 @@ class course():
 
 if __name__ == '__main__':
     try:
+        import sys
+        global osname
+        osname = 'linux' if 'linux' in sys.platform else 'windows'
+
         import sys
         if len(sys.argv) == 1:
             app = course()
