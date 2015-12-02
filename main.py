@@ -76,7 +76,7 @@ class course():
         for i in data:
             if i[0][3] == room:
                 i = i[0]
-                duration = self.convert_time(i[2][0:4])+" ~ "+self.convert_time(i[2][8:])
+                duration = self.convert_time(i[2][0:5])+" ~ "+self.convert_time(i[2][8:])
                 #class_data = i[0]+"\t"+i[1]+"\t"+duration+"\t"+i[3]
                 class_data = "[{}] [{}] [{}] {}".format(i[3],duration,i[1],i[0])
                 #print class_data
@@ -86,11 +86,6 @@ class course():
             print "[!] No info available right now. \n[!] Check back later"
         else:
             for i in classes: print i
-
-        #print classes
-#             0                  1           2           3
-#[('CP1404 - Programming I', 'LA', '09:00 - 11:50', 'C2-04')]
-        
 
     def getcoursekey(self):
         """ 
