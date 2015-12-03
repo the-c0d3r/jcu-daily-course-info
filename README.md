@@ -4,19 +4,19 @@ This simple script is just for getting information on your course such as the ti
 
 It will only display the course information if it is listed on this [JCU webpage](http://afm.jcu.edu.sg/JCU/InfoDisplay/DailyCourseInfoMain.aspx) and since it is daily time table, it will not display future or past day's time table and the courses which are not available on that day. 
 
-**It won't display anything if there is no information on that course in [JCU webpage](http://afm.jcu.edu.sg/JCU/InfoDisplay/DailyCourseInfoMain.aspx)**
-
-
 ####Why waste time to develope this [add suitable adjective here] ?
-**Because** I have time to waste and I want to check information for my course only. I don't give a **** to other course information. And I don't want to waste time looking at that messy JCU webpage for timetable.
+**Because** I have time to waste and I want to check information for my course only. I don't want to waste time looking at that messy JCU webpage for timetable.
+
+Feature 
+===
+
+- Get your daily course information
+- Get the classes that will or currently commencing at the room
+
 
 Usage
 ===
-Enter your course code inside the course.txt file, each subject code in each line
-```
-LS0300
-BU1805
-```
+
 Run the program 
 ```sh
 python main.py
