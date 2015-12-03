@@ -23,13 +23,11 @@ banner2 = """
    .SS   d%%SP  .SS       SS.  
    S%S  d%S'    S%S       S%S  
    S%S  S%S     S%S       S%S  
-   S&S  S&S     S&S       S&S  
-   S&S  S&S     S&S       S&S  
-   S&S  S&S     S&S       S&S  
-   S&S  S&S     S&S       S&S  
+   S&S  S&S     S&S       S&S      
+   S&S  S&S     S&S       S&S 
    d*S  S*b     S*b       d*S  
   .S*S  S*S.    S*S.     .S*S  
-sdSSS    SSSbs   SSSbs_sdSSS   
+sdSSS    SSSbs   SSSbsssdSSS   
 YSSY      YSSP    YSSP~YSSY    
 """
 
@@ -54,38 +52,40 @@ class course():
             print("[~] Getting webpage")
             self.page = self.getpage()
             # Get the webpage
-            self.parse(self.page,ckey)
-            # Parse and display the data scrapped. 
+            data = self.parse(self.page)
+            numClass = 0
+            for subject in ckey:
+                for code in data:
+                    if subject in code["Course"]:
+                        print("\n")
+                        numClass += 1
+                        for classes in code.keys():
+                            print("{} : {}".format(classes,code[classes]))
+            if numClass == 0:
+                print("\n[+] No more classes today")
+            elif numClass >=1 :
+                print("\n[+] There are %s Classes" % numClass)
 
     def checkroom(self,room):
         print("[~] Getting webpage")
         
         page = self.getpage()
         #print page
-        date = self.getdate(page)
-        print("[+] Date : %s" % date)
-        data = []
-        classes = []
-        print("[+] Getting information for room : %s\n" % room)
-        pat = re.compile(r'.+<td class="BTsubj">(.+)</td><td class="BTclass">(.+)</td><td class="BTtime">(.+)</td><td class="BTroom">(.+)</td></tr>.+')
-        for i in page:
-            if len(pat.findall(i)) != 0:
-                data.append(pat.findall(i))
-            else: pass
+        #date = self.getdate(page)
+        #print("[+] Date : %s" % date)
+        data = self.parse(page)
+        
+        print("\n[+] Room : %s" % room)
+        numClass = 0
+        for code in data:
+            if room == code["Room"]:
+                numClass += 1
+                print("[{}] [{}] {}".format(code["Time"],code["Type"],code["Course"]))
 
-        for i in data:
-            if i[0][3] == room:
-                i = i[0]
-                duration = self.convert_time(i[2][0:5])+" ~ "+self.convert_time(i[2][8:])
-                #class_data = i[0]+"\t"+i[1]+"\t"+duration+"\t"+i[3]
-                class_data = "[{}] [{}] [{}] {}".format(i[3],duration,i[1],i[0])
-                #print class_data
-                classes.append(class_data)
-
-        if not classes:
-            print "[!] No info available right now. \n[!] Check back later"
+        if numClass == 0:
+            print("\n[!] No info available right now. \n[!] Check back later")
         else:
-            for i in classes: print i
+            print("\n[+] Number of class : %s" % numClass)
 
     def getcoursekey(self):
         """ 
@@ -176,52 +176,27 @@ class course():
                 date = date_pattern.findall(i)
         return date[0]
 
-    def parse(self, data, key):
+    def parse(self, data):
         """
         Gets the input as list
         Returns the course info
         """
-        course_info = [] # to keep the course data inside as dictionary which is stated by coursekey
-
-        filtered = [] # to keep all the subject list
-        classes = 0 # Count of number of class today
-
+        page = urllib.urlopen("http://afm.jcu.edu.sg/JCU/InfoDisplay/DailyCourseInformation.aspx").readlines()
         pat = re.compile(r'<td class="BTsubj">(.+)</td><td class="BTclass">(.+)</td><td class="BTtime">(.+)</td><td class="BTroom">(.+)</td></tr>')
+        info = []
+        print("[+] Processing webpage")
+        for line in page:
+            if len(pat.findall(line)) != 0:
+                tempdata = pat.findall(line)[0]
+                duration = self.convTime(tempdata[2][:5])+"~"+self.convTime(tempdata[2][8:])
+                tempdict = {"Course": tempdata[0],
+                            "Type"  : tempdata[1],
+                            "Time"  : duration,
+                            "Room"  : tempdata[3]}
+                info.append(tempdict)
+        return info
 
-        for i in data:
-        # Filter all the html code starting with <td class="BTsubj"
-            if len(pat.findall(i)) != 0:
-            # If the pattern is matched
-                filtered.append(pat.findall(i))
-                # The variable "i" is added to filtered list
-            else: pass
-        
-        for i in filtered:
-            for a in key:
-                if a in i[0][0]:
-                    duration = self.convert_time(i[0][2][:5])+" ~ "+self.convert_time(i[0][2][8:])
-                    # i[0][2][:5] is the start time and i[0][2][8:] is end time
-                    # get those time strings and call convert_time to convert them into 12 hour format.
-                    #course_data = "\nCourse : {}\nType : {}\nTime : {}\nRoom : {}\n".format(i[0][0],i[0][1],duration,i[0][3])
-                    course_data = {"Course":i[0][0],"Type":i[0][1],"Time":duration,"Room":i[0][3]}
-                    #print(course_data)
-                    course_info.append(course_data)
-                    classes += 1
-                    
-        for data in course_info:
-            print ''
-            for classdata in data.keys():
-                print("{} : {}".format(classdata,data[classdata]))
-
-        if not course_info:
-            print("\n[*] No More Class for today")
-        elif course_info:
-            print ("\n[*] There are %s class(es) today" % len(course_info))
-
-        # Example response from Regular Expression, just for debugging purpose
-        #[('BU1805 - Contemporary Business Communications', 'LA,B,C,D,E,F', '16:00 - 17:50', 'C4-14')]
-
-    def convert_time(self,data):
+    def convTime(self,data):
         """
         Get input as string
         Convert it into 12 hour format if necessary
