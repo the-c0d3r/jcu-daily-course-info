@@ -1,5 +1,7 @@
 # JCU Daily Course info
 
+**Contributors** : [the-c0d3r](https://github.com/the-c0d3r), [Hades.y2k](https://github.com/Hadesy2k)
+
 This simple script is just for getting information on your course such as the time, class, and type of class such as lecture or Practical etc. The information is scrapped from publicly available source of [JCU website](http://afm.jcu.edu.sg/JCU/InfoDisplay/DailyCourseInfoMain.aspx)
 
 It will only display the course information if it is listed on this [JCU webpage](http://afm.jcu.edu.sg/JCU/InfoDisplay/DailyCourseInfoMain.aspx) and since it is daily time table, it will not display future or past day's time table and the courses which are not available on that day. 
@@ -12,6 +14,7 @@ Feature
 
 - Get your daily course information
 - Get the classes that will or currently commencing at the room
+- Get a list of class room which is not currently occupied, so you can go and do whatever
 
 
 Usage
@@ -28,6 +31,11 @@ python main.py c2-04
 ```
 It will show all the classes that commence in the room "c2-04"
 
+Get a list of free rooms
+```sh
+python getaroom.py
+```
+
 
 Options
 ===
@@ -42,3 +50,5 @@ LS0300
 BU1805
 ```
 ![Imgur](http://i.imgur.com/ExJ70Xs.png)
+
+![Imgur](http://i.imgur.com/6Hu2Gxa.png)
