@@ -8,27 +8,27 @@ import os
 
 
 banner1 = """
-   $$$$$\  $$$$$$\  $$\   $$\ 
+   $$$$$\  $$$$$$\  $$\   $$\
    \__$$ |$$  __$$\ $$ |  $$ |
       $$ |$$ /  \__|$$ |  $$ |
       $$ |$$ |      $$ |  $$ |
 $$\   $$ |$$ |      $$ |  $$ |
 $$ |  $$ |$$ |  $$\ $$ |  $$ |
 \$$$$$$  |\$$$$$$  |\$$$$$$  |
- \______/  \______/  \______/ 
+ \______/  \______/  \______/
  """
 
 banner2 = """
-    .S    sSSs   .S       S.   
-   .SS   d%%SP  .SS       SS.  
-   S%S  d%S'    S%S       S%S  
-   S%S  S%S     S%S       S%S  
-   S&S  S&S     S&S       S&S      
-   S&S  S&S     S&S       S&S 
-   d*S  S*b     S*b       d*S  
-  .S*S  S*S.    S*S.     .S*S  
-sdSSS    SSSbs   SSSbsssdSSS   
-YSSY      YSSP    YSSP~YSSY    
+    .S    sSSs   .S       S.
+   .SS   d%%SP  .SS       SS.
+   S%S  d%S'    S%S       S%S
+   S%S  S%S     S%S       S%S
+   S&S  S&S     S&S       S&S
+   S&S  S&S     S&S       S&S
+   d*S  S*b     S*b       d*S
+  .S*S  S*S.    S*S.     .S*S
+sdSSS    SSSbs   SSSbsssdSSS
+YSSY      YSSP    YSSP~YSSY
 """
 
 # Website used to generate banner => http://patorjk.com/software/taag/
@@ -40,12 +40,18 @@ display_banner = True
 
 class course():
 
-    def __init__(self, room=None):
+    def __init__(self, data=None):
         if display_banner:
             print banner2
             # Options, banner1 or banner2, whichever banner you like
-        if room:
-            self.checkroom(room)
+
+        course_pattern = re.compile("(\w\w[\-]?\d\d\d\d)")
+        room_pattern = re.compile("(\w\d[\-?]\d\d)")
+
+        if course_pattern.match(str(data)):
+            self.checkSubject(data)
+        elif room_pattern.match(str(data)):
+            self.checkroom(data)
         else:
             ckey = self.getcoursekey()
             # getcoursekey returns list, and save it as ckey
@@ -66,29 +72,46 @@ class course():
             elif numClass >=1 :
                 print("\n[+] There are %s Classes" % numClass)
 
+    def checkSubject(self,subj):
+        print("[~] Getting webpage")
+        page = self.getpage()
+        data = self.parse(page)
+        print("\n[+] Subject : %s" % subj)
+        numClasses = 0
+
+        for code in data:
+            if subj in code["Course"]:
+                numClasses += 1
+                print("[{}] [{}] {}".format(code["Course"],code["Time"],code["Type"]))
+        if numClasses > 0:
+            print("[+] Number of classes : %s" % numClasses)
+        else:
+            print("[!] No information available for %s" % subj)
+
+
     def checkroom(self,room):
         print("[~] Getting webpage")
-        
+
         page = self.getpage()
         #print page
         #date = self.getdate(page)
         #print("[+] Date : %s" % date)
         data = self.parse(page)
-        
+
         print("\n[+] Room : %s" % room)
-        numClass = 0
+        numClasses = 0
         for code in data:
             if room == code["Room"]:
-                numClass += 1
+                numClasses += 1
                 print("[{}] [{}] {}".format(code["Time"],code["Type"],code["Course"]))
 
-        if numClass == 0:
+        if numClasses == 0:
             print("\n[!] No info available right now. \n[!] Check back later")
         else:
-            print("\n[+] Number of class : %s" % numClass)
+            print("\n[+] Number of class : %s" % numClasses)
 
     def getcoursekey(self):
-        """ 
+        """
         Read the course.txt and see if it is empty
         And prompt to enter course code if empty
         Returns coursekeys in list format
@@ -98,7 +121,7 @@ class course():
         try:
             if os.stat(str("%s/course.txt" % os.path.abspath('.'))).st_size <= 1:
             # Checking if the filesize is 0 byte
-            # If it is empty/0 byte, ask for subject code. 
+            # If it is empty/0 byte, ask for subject code.
                 print("[!] Course.txt is empty")
                 self.writecourse()
                 return self.readcoursekey()
@@ -107,12 +130,12 @@ class course():
                 return self.readcoursekey()
 
         except IOError:
-            # This exception is to caught platform's file hierarchy 
+            # This exception is to caught platform's file hierarchy
             # Example linux use '/'
             #         windows use '\'
             if os.stat(str("%s\course.txt" % os.path.abspath('.'))).st_size <= 1:
             # Checking if the filesize is 0 byte
-            # If it is empty/0 byte, ask for subject code. 
+            # If it is empty/0 byte, ask for subject code.
                 print("[!] Course.txt is empty")
                 self.writecourse()
                 return self.readcoursekey()
@@ -157,7 +180,7 @@ class course():
         with open('course.txt','w') as cf:
             for i in key:
                 cf.write(i+'\n')
-    
+
     def getpage(self):
         """
         Access the website
@@ -218,6 +241,7 @@ if __name__ == '__main__':
         osname = 'linux' if 'linux' in sys.platform else 'windows'
 
         import sys
+
         if len(sys.argv) == 1:
             app = course()
         elif len(sys.argv) == 2:
