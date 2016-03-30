@@ -45,13 +45,17 @@ class course():
             print banner2
             # Options, banner1 or banner2, whichever banner you like
 
+        # Checks if the input argument is room number or course code
         course_pattern = re.compile("(\w\w[\-]?\d\d\d\d)")
         room_pattern = re.compile("(\w\d[\-?]\d\d)")
 
+        # if course code, search for course information
+        # else if room number, search for room information
         if course_pattern.match(str(data)):
             self.checkSubject(data)
         elif room_pattern.match(str(data)):
             self.checkroom(data)
+
         else:
             ckey = self.getcoursekey()
             # getcoursekey returns list, and save it as ckey
@@ -82,12 +86,11 @@ class course():
         for code in data:
             if subj in code["Course"]:
                 numClasses += 1
-                print("[{}] [{}] {}".format(code["Course"],code["Time"],code["Type"]))
+                print("[{}] [{}] {}".format(code["Time"],code["Course"],code["Type"]))
         if numClasses > 0:
             print("[+] Number of classes : %s" % numClasses)
         else:
             print("[!] No information available for %s" % subj)
-
 
     def checkroom(self,room):
         print("[~] Getting webpage")
