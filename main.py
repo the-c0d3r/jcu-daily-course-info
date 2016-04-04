@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_
-#!/usr/bin/env python
+# !/usr/bin/env python
 
 import re
 import urllib
@@ -46,6 +46,27 @@ banner3 = """
 
 """
 
+banner4 = """
+            »
+            ╣
+       ╖  ╣-Å.╣─,-
+      ,╓Ñ╓╪╣╣╣╗╕Ü,-
+     ,,╡╒╬ÅÅÅÅδ╣µ║,
+╗╗╖      ,╓╗╗╦╖      ,╓╗╦
+▒███▌▌▒▒▌███████▌▒▒▌▌███▌
+`╙╙▀█████▀Γ``╙Ñ▀█████▀Γ``
+                                   `7MMF' .g8\"\"\"bgd `7MMF'   `7MF'
+▒▒▒▄╗,,,╓╗▒▒▒▒▒╗╖,,,╓╗▒▒▒            MM .dP'     `M   MM       M
+▒███████████████████████▌            MM dM'       `   MM       M
+    Ñ▀▀▀Γ`      Ñ▀▀▀Γ                MM MM            MM       M
+ ,         ,,,         ,             MM MM.           MM       M
+ ╚█▌▒▒▄▄▒▌█████▌▒▄▄▒▒▌█Σ        (O)  MM `Mb.     ,'   YM.     ,M
+  ╙██████▌▀▀▀▀▀██████▌Γ          Ymmm9    `\"bmmmd'     `bmmmmd\"'
+                                ██████████████████████████████████████
+         ╓╗╣▄▄╗,
+         `▀██▌▀Γ
+                         """
+
 # Website used to generate banner => http://patorjk.com/software/taag/
 # Banner1 font = Big Money-nw
 # Banner2 font = AMC AAA01
@@ -54,12 +75,13 @@ banner3 = """
 display_banner = True
 # Replace "True" with "False" if you want to disable banner
 
+
 class course():
 
     def __init__(self, data=None):
         self.data = []
         if display_banner:
-            print banner3
+            print banner4
             # Options, banner1 or banner2 or banner3, whichever banner you like
 
         # Checks if the input argument is room number or course code
@@ -92,7 +114,7 @@ class course():
                 self.pprint(self.data)
                 print("\n[+] There are %d Classes" % len(self.data))
 
-    def pprint(self,data):
+    def pprint(self, data):
         self.data = data
         rwidth = max([len(subj["Course"]) for subj in self.data]) + 4
         lwidth = max([len(subj.keys()) for subj in self.data]) + 5
@@ -102,15 +124,15 @@ class course():
         lspace = max([len(subj.keys()) for subj in self.data])+2
         for course in self.data:
             # printed manually cuz the keys in the self.data dictionary is not sorted
-            print "."*lineseparater
-            print ("| {:%d} : {:%d} |"%(lspace,rspace)).format("Course",course["Course"])
-            print ("| {:%d} : {:%d} |"%(lspace,rspace)).format("Type",course["Type"])
-            print ("| {:%d} : {:%d} |"%(lspace,rspace)).format("Time",course["Time"])
-            print ("| {:%d} : {:%d} |"%(lspace,rspace)).format("Room",course["Room"])
-            print "."*lineseparater
+            print "." * lineseparater
+            print ("| {:%d} : {:%d} |" % (lspace, rspace)).format("Course", course["Course"])
+            print ("| {:%d} : {:%d} |" % (lspace, rspace)).format("Type", course["Type"])
+            print ("| {:%d} : {:%d} |" % (lspace, rspace)).format("Time", course["Time"])
+            print ("| {:%d} : {:%d} |" % (lspace, rspace)).format("Room", course["Room"])
+            print "." * lineseparater
             print ""
 
-    def checkSubject(self,subj):
+    def checkSubject(self, subj):
         print("[~] Getting webpage")
         page = self.getpage()
         pagedata = self.parse(page)
@@ -126,13 +148,12 @@ class course():
         else:
             print("[!] No information available for %s" % subj)
 
-    def checkroom(self,room):
+    def checkroom(self, room):
         print("[~] Getting webpage")
-
         page = self.getpage()
-        #print page
-        #date = self.getdate(page)
-        #print("[+] Date : %s" % date)
+        # print page
+        # date = self.getdate(page)
+        # print("[+] Date : %s" % date)
         data = self.parse(page)
 
         print("\n[+] Room : %s" % room)
@@ -140,7 +161,7 @@ class course():
         for code in data:
             if room == code["Room"]:
                 numClasses += 1
-                print("[{}] [{}] {}".format(code["Time"],code["Type"],code["Course"]))
+                print("[{}] [{}] {}".format(code["Time"], code["Type"], code["Course"]))
 
         if numClasses == 0:
             print("\n[!] No info available right now. \n[!] Check back later")
@@ -157,13 +178,13 @@ class course():
         # Check if the file exists first.
         try:
             if os.stat(str("%s/course.txt" % os.path.abspath('.'))).st_size <= 1:
-            # Checking if the filesize is 0 byte
-            # If it is empty/0 byte, ask for subject code.
+                # Checking if the filesize is 0 byte
+                # If it is empty/0 byte, ask for subject code.
                 print("[!] Course.txt is empty")
                 self.writecourse()
                 return self.readcoursekey()
             else:
-            # else means the file size is not 0 byte, which means the file is not empty
+                # else means the file size is not 0 byte, which means the file is not empty
                 return self.readcoursekey()
 
         except IOError:
@@ -171,14 +192,14 @@ class course():
             # Example linux use '/'
             #         windows use '\'
             if os.stat(str("%s\course.txt" % os.path.abspath('.'))).st_size <= 1:
-            # Checking if the filesize is 0 byte
-            # If it is empty/0 byte, ask for subject code.
+                # Checking if the filesize is 0 byte
+                # If it is empty/0 byte, ask for subject code.
                 print("[!] Course.txt is empty")
                 self.writecourse()
                 return self.readcoursekey()
 
             else:
-            # else means the file size is not 0 byte, which means the file is not empty
+                # else means the file size is not 0 byte, which means the file is not empty
                 return self.readcoursekey()
 
     def checkfile(self):
@@ -214,7 +235,8 @@ class course():
                 key.append(code.upper())
             else:
                 break
-        with open('course.txt','w') as cf:
+
+        with open('course.txt', 'w') as cf:
             for i in key:
                 cf.write(i+'\n')
 
@@ -256,7 +278,7 @@ class course():
                 info.append(tempdict)
         return info
 
-    def convTime(self,data):
+    def convTime(self, data):
         """
         Get input as string
         Convert it into 12 hour format if necessary
