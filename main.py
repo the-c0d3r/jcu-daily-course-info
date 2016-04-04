@@ -1,3 +1,4 @@
+# _*_ coding: utf-8 _*_
 #!/usr/bin/env python
 
 import re
@@ -31,9 +32,24 @@ sdSSS    SSSbs   SSSbsssdSSS
 YSSY      YSSP    YSSP~YSSY
 """
 
+banner3 = """
+
+
+   `7MMF' .g8\"\"\"bgd `7MMF'   `7MF'
+     MM .dP'     `M   MM       M
+     MM dM'       `   MM       M
+     MM MM            MM       M
+     MM MM.           MM       M
+(O)  MM `Mb.     ,'   YM.     ,M
+ Ymmm9    `\"bmmmd'     `bmmmmd\"'
+
+
+"""
+
 # Website used to generate banner => http://patorjk.com/software/taag/
 # Banner1 font = Big Money-nw
 # Banner2 font = AMC AAA01
+# Banner3 font = Georgia11
 
 display_banner = True
 # Replace "True" with "False" if you want to disable banner
@@ -41,9 +57,10 @@ display_banner = True
 class course():
 
     def __init__(self, data=None):
+        self.data = []
         if display_banner:
-            print banner2
-            # Options, banner1 or banner2, whichever banner you like
+            print banner3
+            # Options, banner1 or banner2 or banner3, whichever banner you like
 
         # Checks if the input argument is room number or course code
         course_pattern = re.compile("(\w\w[\-]?\d\d\d\d)")
@@ -67,28 +84,45 @@ class course():
             for subject in ckey:
                 for code in data:
                     if subject in code["Course"]:
-                        print("\n")
-                        numClass += 1
-                        for classes in code.keys():
-                            print("{} : {}".format(classes,code[classes]))
-            if numClass == 0:
+                        self.data.append(code)
+
+            if len(self.data) == 0:
                 print("\n[+] No more classes today")
-            elif numClass >=1 :
-                print("\n[+] There are %s Classes" % numClass)
+            else:
+                self.pprint(self.data)
+                print("\n[+] There are %d Classes" % len(self.data))
+
+    def pprint(self,data):
+        self.data = data
+        rwidth = max([len(subj["Course"]) for subj in self.data]) + 4
+        lwidth = max([len(subj.keys()) for subj in self.data]) + 5
+        lineseparater = lwidth + rwidth
+
+        rspace = max([len(subj["Course"]) for subj in self.data])
+        lspace = max([len(subj.keys()) for subj in self.data])+2
+        for course in self.data:
+            # printed manually cuz the keys in the self.data dictionary is not sorted
+            print "."*lineseparater
+            print ("| {:%d} : {:%d} |"%(lspace,rspace)).format("Course",course["Course"])
+            print ("| {:%d} : {:%d} |"%(lspace,rspace)).format("Type",course["Type"])
+            print ("| {:%d} : {:%d} |"%(lspace,rspace)).format("Time",course["Time"])
+            print ("| {:%d} : {:%d} |"%(lspace,rspace)).format("Room",course["Room"])
+            print "."*lineseparater
+            print ""
 
     def checkSubject(self,subj):
         print("[~] Getting webpage")
         page = self.getpage()
-        data = self.parse(page)
+        pagedata = self.parse(page)
         print("\n[+] Subject : %s" % subj)
-        numClasses = 0
+        data = []
+        for code in pagedata:
+            if subj.upper() in code["Course"]:
+                data.append(code)
 
-        for code in data:
-            if subj in code["Course"]:
-                numClasses += 1
-                print("[{}] [{}] {}".format(code["Time"],code["Course"],code["Type"]))
-        if numClasses > 0:
-            print("[+] Number of classes : %s" % numClasses)
+        if len(data) > 0:
+            self.pprint(data)
+            print("[+] Number of classes : %s" % len(data))
         else:
             print("[!] No information available for %s" % subj)
 
