@@ -14,22 +14,19 @@ Feature
 
 - Get your daily course information
 - Get the classes that will or currently commencing at the room
-- Get a list of class room which is not currently occupied, so you can go and do whatever
+- Get the information for the class by subject code
+- Get a list of class room which is not currently occupied.
 
 
 Usage
 ===
 
-Run the program 
 ```sh
 python main.py
+python main.py c2-04 
+python main.py py5012
 ```
 
-Check the schedule of the room
-```sh
-python main.py c2-04
-```
-It will show all the classes that commence in the room "c2-04"
 
 Get a list of free rooms
 ```sh
@@ -49,11 +46,7 @@ alias jcu="cd path/to/jcu-daily-course-info && python main.py && cd - > /dev/nul
 
 Screenshot
 =====
-Example run with course code
-```
-LS0300
-BU1805
-```
-![Imgur](http://i.imgur.com/ExJ70Xs.png)
+
+<img src="http://i.imgur.com/mcV5hhd.png" height="500" />
 
 ![Imgur](http://i.imgur.com/6Hu2Gxa.png)
