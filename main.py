@@ -75,6 +75,7 @@ banner4 = """
 display_banner = True
 # Replace "True" with "False" if you want to disable banner
 
+course_txt = str("%s/course.txt" % os.path.dirname(__file__))
 
 class course():
 
@@ -177,7 +178,8 @@ class course():
         self.checkfile()
         # Check if the file exists first.
         try:
-            if os.stat(str("%s/course.txt" % os.path.abspath('.'))).st_size <= 1:
+
+            if os.stat(course_txt).st_size <= 1:
                 # Checking if the filesize is 0 byte
                 # If it is empty/0 byte, ask for subject code.
                 print("[!] Course.txt is empty")
@@ -191,7 +193,7 @@ class course():
             # This exception is to caught platform's file hierarchy
             # Example linux use '/'
             #         windows use '\'
-            if os.stat(str("%s\course.txt" % os.path.abspath('.'))).st_size <= 1:
+            if os.stat(course_txt).st_size <= 1:
                 # Checking if the filesize is 0 byte
                 # If it is empty/0 byte, ask for subject code.
                 print("[!] Course.txt is empty")
@@ -208,19 +210,19 @@ class course():
         And create the file if necessary
         """
         try:
-            f = open('course.txt').read()
+            f = open(course_txt).read()
         except IOError:
             if osname == 'windows':
-                os.system('copy NUL course.txt')
+                os.system('copy NUL %s' % course_txt)
             elif osname == 'linux':
-                os.system('touch course.txt')
+                os.system('touch %s' % course_txt)
 
     def readcoursekey(self):
         """
         Read the course key from course.txt
         And return it as a list
         """
-        return [i for i in open('course.txt').read().split('\n') if i != '']
+        return [i for i in open(course_txt).read().split('\n') if i != '']
 
     def writecourse(self):
         """
@@ -236,7 +238,7 @@ class course():
             else:
                 break
 
-        with open('course.txt', 'w') as cf:
+        with open(course_txt, 'w') as cf:
             for i in key:
                 cf.write(i+'\n')
 
