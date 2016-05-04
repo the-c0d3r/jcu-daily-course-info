@@ -79,7 +79,6 @@ if not parentdir:
     course_txt = str("course.txt")
 else:
     course_txt = str("%s/course.txt" % parentdir)
-print(course_txt)
 
 class course():
 
