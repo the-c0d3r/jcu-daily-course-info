@@ -74,8 +74,12 @@ banner4 = """
 
 display_banner = True
 # Replace "True" with "False" if you want to disable banner
-
-course_txt = str("%s/course.txt" % os.path.dirname(__file__))
+parentdir = os.path.dirname(__file__)
+if not parentdir:
+    course_txt = str("course.txt")
+else:
+    course_txt = str("%s/course.txt" % parentdir)
+print(course_txt)
 
 class course():
 
