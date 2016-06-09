@@ -74,11 +74,8 @@ banner4 = """
 
 display_banner = True
 # Replace "True" with "False" if you want to disable banner
-parentdir = os.path.dirname(__file__)
-if not parentdir:
-    course_txt = str("course.txt")
-else:
-    course_txt = str("%s/course.txt" % parentdir)
+course_txt = os.path.dirname(os.path.realpath(__file__)) + os.path.sep + "course.txt"
+
 
 class course():
 
@@ -300,11 +297,8 @@ class course():
 
 if __name__ == '__main__':
     try:
-        import sys
         global osname
         osname = 'linux' if 'linux' in sys.platform else 'windows'
-
-        import sys
 
         if len(sys.argv) == 1:
             app = course()
