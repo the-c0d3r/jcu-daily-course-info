@@ -82,7 +82,7 @@ class course():
     def __init__(self, data=None):
         self.data = []
         if display_banner:
-            print banner4
+            print(banner4)
             # Options, banner1 or banner2 or banner3, whichever banner you like
 
         # Checks if the input argument is room number or course code
@@ -125,13 +125,13 @@ class course():
         lspace = max([len(subj.keys()) for subj in self.data])+2
         for course in self.data:
             # printed manually cuz the keys in the self.data dictionary is not sorted
-            print "." * lineseparater
+            print("." * lineseparater)
             print ("| {:%d} : {:%d} |" % (lspace, rspace)).format("Course", course["Course"])
             print ("| {:%d} : {:%d} |" % (lspace, rspace)).format("Type", course["Type"])
             print ("| {:%d} : {:%d} |" % (lspace, rspace)).format("Time", course["Time"])
             print ("| {:%d} : {:%d} |" % (lspace, rspace)).format("Room", course["Room"])
-            print "." * lineseparater
-            print ""
+            print("." * lineseparater)
+            print("")
 
     def checkSubject(self, subj):
         print("[~] Getting webpage")
@@ -254,6 +254,7 @@ class course():
             sys.exit()
 
     def getdate(self,data):
+        """ Get the date """
         date_pattern = re.compile(r'<br>Date&nbsp;:&nbsp;<span id="lblDate">(.+)</span>')
         for i in data:
             if len(date_pattern.findall(i)) != 0:
@@ -294,6 +295,7 @@ class course():
             hour -= 12
 
         return str(hour)+':'+str(minutes)
+
 
 if __name__ == '__main__':
     try:
