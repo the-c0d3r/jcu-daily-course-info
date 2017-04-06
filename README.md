@@ -1,13 +1,10 @@
 # JCU Daily Course info
 
-**Contributors** : [the-c0d3r](https://github.com/the-c0d3r), [Hades.y2k](https://github.com/Hadesy2k)
+**Contributors** : [the-c0d3r](https://github.com/the-c0d3r)
 
 This simple script is just for getting information on your course such as the time, class, and type of class such as lecture or Practical etc. The information is scrapped from publicly available source of [JCU website](http://afm.jcu.edu.sg/JCU/InfoDisplay/DailyCourseInfoMain.aspx)
 
 It will only display the course information if it is listed on this [JCU webpage](http://afm.jcu.edu.sg/JCU/InfoDisplay/DailyCourseInfoMain.aspx) and since it is daily time table, it will not display future or past day's time table and the courses which are not available on that day. 
-
-####Why waste time to develope this [add suitable adjective here] ?
-**Because** I have time to waste and I want to check information for my course only. I don't want to waste time looking at that messy JCU webpage for timetable.
 
 Feature 
 ===
@@ -48,5 +45,3 @@ Screenshot
 =====
 
 <img src="http://i.imgur.com/mcV5hhd.png" height="500" />
-
-![Imgur](http://i.imgur.com/6Hu2Gxa.png)
