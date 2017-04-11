@@ -1,6 +1,5 @@
 # JCU Daily Course info
 
-**Contributors** : [the-c0d3r](https://github.com/the-c0d3r)
 
 This simple script is just for getting information on your course such as the time, class, and type of class such as lecture or Practical etc. The information is scrapped from publicly available source of [JCU website](http://afm.jcu.edu.sg/JCU/InfoDisplay/DailyCourseInfoMain.aspx)
 
